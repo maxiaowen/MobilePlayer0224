@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.atguigu.mobileplayer0224.R;
 import com.atguigu.mobileplayer0224.activity.SystemVideoPlayerActivity;
@@ -51,8 +50,8 @@ public class LocalVideoPager extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //得到点击item对应的对象
-                MediaItem item = adapter.getItem(position);
-                Toast.makeText(context, ""+item.toString(), Toast.LENGTH_SHORT).show();
+//                MediaItem item = adapter.getItem(position);
+//                Toast.makeText(context, ""+item.toString(), Toast.LENGTH_SHORT).show();
 
 //                //把系统的播放器调起来
 //                Intent intent = new Intent(context,SystemVideoPlayerActivity.class);
@@ -137,13 +136,13 @@ public class LocalVideoPager extends BaseFragment {
 
                         mediaItems.add(new MediaItem(name,duration,size,data));
 
-                        //使用handler
-                        handler.sendEmptyMessage(0);
-
                     }
                     cursor.close();
                 }
 
+
+                //使用handler
+                handler.sendEmptyMessage(0);
             }
         }.start();
     }
