@@ -1,7 +1,9 @@
 package com.atguigu.mobileplayer0224.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -584,8 +586,10 @@ public class VitamioVideoPlayerActivity extends AppCompatActivity implements Vie
         vv.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Toast.makeText(VitamioVideoPlayerActivity.this, "播放出错了", Toast.LENGTH_SHORT).show();
-                return false;
+//                Toast.makeText(VitamioVideoPlayerActivity.this, "播放出错了", Toast.LENGTH_SHORT).show();
+                //万能播放器播放出错的处理
+                showErrorDialog();
+                return true;
             }
         });
         //设置监听播放完成
@@ -666,6 +670,19 @@ public class VitamioVideoPlayerActivity extends AppCompatActivity implements Vie
 //                }
 //            });
 //        }
+    }
+
+    private void showErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("当前视频不可播放，请检查网络或者视频文件是否有损坏！")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     /**
