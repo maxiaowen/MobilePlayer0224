@@ -316,13 +316,14 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         }else if(uri != null){
             //设置播放地址
             vv.setVideoURI(uri);
+            tvName.setText(uri.toString());
         }
         setButtonStatus();
     }
 
     private void getData() {
         //得到播放地址
-        uri = getIntent().getData();
+        uri = getIntent().getData();//获取从外界传入的播放地址-一般只有一个
 //        mediaItems  = (ArrayList<MediaItem>) getIntent().getSerializableExtra("videolist");
 //        position = getIntent().getIntExtra("position",0);
         mediaItems = (ArrayList<MediaItem>) getIntent().getSerializableExtra("videolist");
