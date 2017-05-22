@@ -101,6 +101,8 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
     private Button btnNext;
     private Button btnSwitchScreen;
 
+    private LinearLayout ll_buffering;
+    private TextView tv_net_speed;
 
     private Utils utils;
 
@@ -129,8 +131,9 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         btnStartPause = (Button) findViewById(R.id.btn_start_pause);
         btnNext = (Button) findViewById(R.id.btn_next);
         btnSwitchScreen = (Button) findViewById(R.id.btn_switch_screen);
-
         vv = (VideoView) findViewById(R.id.vv);
+        ll_buffering = (LinearLayout) findViewById(R.id.ll_buffering);
+        tv_net_speed = (TextView) findViewById(R.id.tv_net_speed);
 
         btnVoice.setOnClickListener(this);
         btnSwitchPlayer.setOnClickListener(this);
@@ -254,6 +257,8 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         }
     }
 
+    private int preCurrentPosition;
+
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -279,6 +284,20 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
                         seekbarVideo.setSecondaryProgress(secondaryProgress);
                     }else{
                         seekbarVideo.setSecondaryProgress(0);
+                    }
+
+                    if(isNetUri && vv.isPlaying()){
+
+                        int duration = currentPosition - preCurrentPosition;
+                        if(duration <500){
+                            //卡
+                            ll_buffering.setVisibility(View.VISIBLE);
+                        }else{
+                            //不卡
+                            ll_buffering.setVisibility(View.GONE);
+                        }
+
+                        preCurrentPosition = currentPosition;
                     }
 
                     //循环发消息
@@ -592,6 +611,29 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
 
             }
         });
+
+
+        //版本限制，必须17以上
+        //设置监听卡
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            vv.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+//                @Override
+//                public boolean onInfo(MediaPlayer mp, int what, int extra) {
+//                    switch (what) {
+//                        //拖动卡，缓存卡
+//                        case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+//                            ll_buffering.setVisibility(View.VISIBLE);
+//                            break;
+//                        //拖动卡，缓存卡结束
+//                        case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+//                            ll_buffering.setVisibility(View.GONE);
+//                            break;
+//                    }
+//
+//                    return true;
+//                }
+//            });
+//        }
     }
 
     /**
