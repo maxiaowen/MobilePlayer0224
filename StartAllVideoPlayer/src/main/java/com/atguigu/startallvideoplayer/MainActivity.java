@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     public void startAllVideoPlayer(View v) {
         //把系统的播放器调起来
         Intent intent = new Intent();
-        intent.setDataAndType(Uri.parse("http://192.168.31.168:8080/yellow.mp4"),"video/*");
+        intent.setDataAndType(Uri.parse("http://vfx.mtime.cn/Video/2017/05/09/mp4/170509071709934167.mp4"),"video/*");
         startActivity(intent);
 
     }
