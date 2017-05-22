@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +68,14 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
     private int videoWidth;
     private int videoHeight;
 
+    //当前的音量：0~15之间
+    private int currentVoice;
+    private AudioManager am;
+    //最大音量
+    private int maxVoice;
+    //是否静音
+    private boolean isMute = false;
+
 
     private LinearLayout llTop;
     private TextView tvName;
@@ -124,6 +133,11 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         btnNext.setOnClickListener(this);
         btnSwitchScreen.setOnClickListener(this);
 
+        //关联最大音量
+        seekbarVoice.setMax(maxVoice);
+        //设置当前进度
+        seekbarVoice.setProgress(currentVoice);
+
     }
 
     /**
@@ -135,6 +149,9 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
     @Override
     public void onClick(View v) {
         if (v == btnVoice) {
+            isMute = !isMute;
+
+            updateVoice(isMute);
             // Handle clicks for btnVoice
         } else if (v == btnSwitchPlayer) {
             // Handle clicks for btnSwitchPlayer
@@ -162,6 +179,18 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         }
         handler.removeMessages(HIDE_MEDIACONTROLLER);
         handler.sendEmptyMessageDelayed(HIDE_MEDIACONTROLLER,4000);
+    }
+
+    private void updateVoice(boolean isMute) {
+        if(isMute){
+            //静音
+            am.setStreamVolume(AudioManager.STREAM_MUSIC,0,0);
+            seekbarVoice.setProgress(0);
+        }else{
+            //非静音
+            am.setStreamVolume(AudioManager.STREAM_MUSIC,currentVoice,0);
+            seekbarVoice.setProgress(currentVoice);
+        }
     }
 
     /**
@@ -348,6 +377,11 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         screenHeight = metrics.heightPixels;
         screenWidth = metrics.widthPixels;
+
+        //初始化声音相关
+        am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        currentVoice = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        maxVoice = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     }
 
     @Override
@@ -474,6 +508,45 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
                 handler.sendEmptyMessageDelayed(HIDE_MEDIACONTROLLER,4000);
             }
         });
+
+        //监听拖动声音
+        seekbarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    updateVoiceProgress(progress);
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    /**
+     * 设置滑动改变声音
+     * @param progress
+     */
+    private void updateVoiceProgress(int progress) {
+        currentVoice = progress;
+        //真正改变声音
+        am.setStreamVolume(AudioManager.STREAM_MUSIC,currentVoice,0);
+        //改变进度条
+        seekbarVoice.setProgress(currentVoice);
+        if(currentVoice <=0){
+            isMute = true;
+        }else {
+            isMute = false;
+        }
+
     }
 
     private void setPreVideo() {
