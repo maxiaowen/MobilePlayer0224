@@ -66,7 +66,9 @@ public class Utils {
 	 * @return
 	 */
 	public String getNetSpeed(Context context) {
-		long nowTotalRxBytes = TrafficStats.getUidRxBytes(context.getApplicationInfo().uid)==TrafficStats.UNSUPPORTED ? 0 :(TrafficStats.getTotalRxBytes()/1024);//转为KB;
+		long nowTotalRxBytes = TrafficStats.getUidRxBytes(context.getApplicationInfo()
+				.uid)==TrafficStats.UNSUPPORTED ? 0 :(TrafficStats.getTotalRxBytes()/1024);//转为KB;
+
 		long nowTimeStamp = System.currentTimeMillis();
 		long speed = ((nowTotalRxBytes - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp));//毫秒转换
 		lastTimeStamp = nowTimeStamp;

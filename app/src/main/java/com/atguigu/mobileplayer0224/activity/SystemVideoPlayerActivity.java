@@ -84,7 +84,7 @@ public class SystemVideoPlayerActivity extends AppCompatActivity implements View
      * 是否是网络资源
      *
      */
-    private boolean isNetUri;
+    private boolean isNetUri = true;
 
 
     private LinearLayout llTop;

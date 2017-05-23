@@ -19,6 +19,9 @@ public class MediaItem implements Serializable{
         this.data = data;
     }
 
+    public MediaItem() {
+    }
+
     public String getName() {
         return name;
     }

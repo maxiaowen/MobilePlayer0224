@@ -59,16 +59,6 @@ public class LocalVideoPager extends BaseFragment {
 //                startActivity(intent);
 
                 //传递视频列表过去
-//
-//                Intent intent = new Intent(context, SystemVideoPlayerActivity.class);
-//
-//                Bundle bunlder = new Bundle();
-//                bunlder.putSerializable("videolist",mediaItems);
-//                intent.putExtra("position",position);
-//                //放入Bundler
-//                intent.putExtras(bunlder);
-//                startActivity(intent);
-                //传递视频列表过去
                 Intent intent = new Intent(context, SystemVideoPlayerActivity.class);
                 Bundle bunlder = new Bundle();
                 bunlder.putSerializable("videolist",mediaItems);

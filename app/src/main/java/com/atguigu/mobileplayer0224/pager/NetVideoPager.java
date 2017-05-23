@@ -1,7 +1,7 @@
 package com.atguigu.mobileplayer0224.pager;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.atguigu.mobileplayer0224.R;
 import com.atguigu.mobileplayer0224.activity.SystemVideoPlayerActivity;
 import com.atguigu.mobileplayer0224.adapter.NetVideoAdapter;
+import com.atguigu.mobileplayer0224.domain.MediaItem;
 import com.atguigu.mobileplayer0224.domain.MoveInfo;
 import com.atguigu.mobileplayer0224.fragment.BaseFragment;
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,6 +38,10 @@ public class NetVideoPager extends BaseFragment {
 
     private NetVideoAdapter adapter;
 
+    private ArrayList<MediaItem> mediaItems;
+
+    List<MoveInfo.TrailersBean> datas;
+
     //重写视图
     @Override
     public View initView() {
@@ -43,17 +49,32 @@ public class NetVideoPager extends BaseFragment {
         View view = View.inflate(context, R.layout.fragment_net_video_pager,null);
         lv = (ListView) view.findViewById(R.id.lv);
         tv_nodata = (TextView) view.findViewById(R.id.tv_nodata);
+        mediaItems = new ArrayList<MediaItem>();
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MoveInfo.TrailersBean item = adapter.getItem(position);
+//                MoveInfo.TrailersBean item = adapter.getItem(position);
 
-                Intent intent = new Intent(context, SystemVideoPlayerActivity.class);
-                intent.setDataAndType(Uri.parse(item.getUrl()),"video/*");
-                startActivity(intent);
 
-            }
+
+//                Intent intent = new Intent(context, SystemVideoPlayerActivity.class);
+//                intent.setDataAndType(Uri.parse(item.getUrl()),"video/*");
+//                startActivity(intent);
+
+
+            //传递视频列表过去
+
+            Intent intent = new Intent(context, SystemVideoPlayerActivity.class);
+
+            Bundle bunlder = new Bundle();
+            bunlder.putSerializable("videolist",mediaItems);
+            intent.putExtra("position",position);
+            //放入Bundler
+            intent.putExtras(bunlder);
+            startActivity(intent);
+
+        }
         });
         return view;
     }
@@ -99,7 +120,7 @@ public class NetVideoPager extends BaseFragment {
          */
         private void processData(String json) {
             MoveInfo moveInfo = new Gson().fromJson(json, MoveInfo.class);
-            List<MoveInfo.TrailersBean> datas = moveInfo.getTrailers();
+            datas = moveInfo.getTrailers();
             if(datas != null && datas.size() >0){
                 tv_nodata.setVisibility(View.GONE);
                 //有数据-适配器
@@ -107,6 +128,17 @@ public class NetVideoPager extends BaseFragment {
                 lv.setAdapter(adapter);
             }else{
                 tv_nodata.setVisibility(View.VISIBLE);
+            }
+
+            for(int i = 0; i < datas.size(); i++) {
+                MoveInfo.TrailersBean bean = datas.get(i);
+                String name = bean.getMovieName();
+                String data = bean.getUrl();
+
+                MediaItem mediaItem = new MediaItem();
+                mediaItem.setName(name);
+                mediaItem.setData(data);
+                mediaItems.add(mediaItem);
             }
 
         }
