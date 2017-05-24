@@ -368,14 +368,10 @@ public class VitamioVideoPlayerActivity extends AppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
 
         initData();
-
         findViews();
         getData();
-
-
         setListener();
         setData();
-
 
 //        //设置控制面板
 //        vv.setMediaController(new MediaController(this));
