@@ -1,7 +1,10 @@
 package com.atguigu.mobileplayer0224.pager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,14 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * 作者：杨光福 on 2017/5/19 11:47
- * QQ：541433511
- * 微信：yangguangfu520
- * 作用：
- */
 
 public class NetVideoPager extends BaseFragment {
+
+    public static final String uri = "http://api.m.mtime.cn/PageSubArea/TrailerList.api";
+    private SharedPreferences sp;
 
     private ListView lv;
     private TextView tv_nodata;
@@ -49,6 +49,7 @@ public class NetVideoPager extends BaseFragment {
     //重写视图
     @Override
     public View initView() {
+        sp = context.getSharedPreferences("atguigu", Context.MODE_PRIVATE);
         Log.e("TAG","NetVideoPager-initView");
         View view = View.inflate(context, R.layout.fragment_net_video_pager,null);
         lv = (ListView) view.findViewById(R.id.lv);
@@ -104,16 +105,27 @@ public class NetVideoPager extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e("TAG", "NetVideoPager-initData");
+
+        //在联网之前加载本地缓存，如果有就解析
+        String saveJson = sp.getString(uri, "");
+        if(!TextUtils.isEmpty(saveJson)){
+            //解析缓存的数据
+            processData(saveJson);
+            Log.e("TAG","解析缓存的数据=="+saveJson);
+        }
         getDataFromNet();
     }
 
 
     public void getDataFromNet() {
         //配置联网请求地址
-        final RequestParams request = new RequestParams("http://api.m.mtime.cn/PageSubArea/TrailerList.api");
+        final RequestParams request = new RequestParams(uri);
         x.http().get(request, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
+
+                //缓存联网请求到的数据
+                sp.edit().putString(uri,result).commit();
 
                 Log.e("TAG","xUtils联网成功=="+result);
                 processData(result);
