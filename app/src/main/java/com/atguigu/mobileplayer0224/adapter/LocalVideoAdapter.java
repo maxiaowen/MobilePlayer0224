@@ -5,6 +5,7 @@ import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.atguigu.mobileplayer0224.R;
@@ -20,12 +21,15 @@ import java.util.ArrayList;
 public class LocalVideoAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<MediaItem> datas;
+    private final boolean isVideo;
     private Utils utils;
 
-    public LocalVideoAdapter(Context context, ArrayList<MediaItem> mediaItems) {
+
+    public LocalVideoAdapter(Context context, ArrayList<MediaItem> mediaItems,boolean b) {
         this.context = context;
         this.datas = mediaItems;
         utils = new Utils();
+        this.isVideo = b;
 
     }
 
@@ -54,6 +58,7 @@ public class LocalVideoAdapter extends BaseAdapter {
             viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             viewHolder.tv_duration = (TextView) convertView.findViewById(R.id.tv_duration);
             viewHolder.tv_size = (TextView) convertView.findViewById(R.id.tv_size);
+            viewHolder.iv_icon = (ImageView) convertView.findViewById(R.id.iv_icon);
             convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -65,11 +70,15 @@ public class LocalVideoAdapter extends BaseAdapter {
         viewHolder.tv_size.setText(Formatter.formatFileSize(context,mediaItem.getSize()));
         viewHolder.tv_duration.setText(utils.stringForTime((int) mediaItem.getDuration()));
 
+        if(!isVideo){
+            //音乐
+            viewHolder.iv_icon.setImageResource(R.drawable.music_default_bg);
+        }
         return convertView;
     }
 
     static class ViewHolder {
-
+        ImageView iv_icon;
         TextView tv_name;
         TextView tv_duration;
         TextView tv_size;
