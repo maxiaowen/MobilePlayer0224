@@ -12,6 +12,8 @@ public class MediaItem implements Serializable{
     private long size;
     private String data;
 
+    private String artist;
+
     public MediaItem(String name, long duration, long size, String data) {
         this.name = name;
         this.duration = duration;
@@ -19,7 +21,23 @@ public class MediaItem implements Serializable{
         this.data = data;
     }
 
+    public MediaItem(String name, long duration, long size, String data,String artist) {
+        this.name = name;
+        this.duration = duration;
+        this.size = size;
+        this.data = data;
+        this.artist = artist;
+    }
+
     public MediaItem() {
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getName() {

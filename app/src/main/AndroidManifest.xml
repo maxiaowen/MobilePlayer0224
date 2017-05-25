@@ -282,12 +282,19 @@
             android:name=".activity.VitamioVideoPlayerActivity"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
-            android:theme="@style/noAnimation_Theme"></activity>
+            android:theme="@style/noAnimation_Theme" />
+        <activity android:name=".activity.AudioPlayerActivity"></activity>
 
+        <service
+            android:name=".service.MusicPlayService"
+            android:enabled="true"
+            android:exported="true">
 
-        <activity android:name=".activity.AudioPlayerActivity">
+            <intent-filter >
+                <action android:name="com.atguigu.mobileplayer0224.service.MUSICPLAYSERVICE"/>
+            </intent-filter>
 
-        </activity>
+        </service>
     </application>
 
 </manifest>
