@@ -260,6 +260,7 @@ public class MusicPlayService extends Service {
         }
     }
 
+
     class MyOnPreparedListener implements MediaPlayer.OnPreparedListener{
 
         @Override
@@ -267,6 +268,8 @@ public class MusicPlayService extends Service {
             //发广播
             notifyChange(OPEN_COMPLETE);
             start();
+
+
         }
     }
     /**

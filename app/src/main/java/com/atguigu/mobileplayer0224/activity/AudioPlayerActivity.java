@@ -183,6 +183,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         } else if (v == btnPre) {
             try {
                 service.pre();
+                buttonState();
+
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -200,6 +202,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
                     //按钮专题-暂停
                     btnStartPause.setBackgroundResource(R.drawable.btn_audio_pause_selector);
                 }
+
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -207,12 +210,27 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         } else if (v == btnNext) {
             try {
                 service.next();
+                buttonState();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
             // Handle clicks for btnNext
         } else if (v == btnLyric) {
             // Handle clicks for btnLyric
+        }
+    }
+
+    private void buttonState() {
+        try {
+            if (service.isPlaying()) {
+                //按钮状态-播放
+                btnStartPause.setBackgroundResource(R.drawable.btn_audio_start_selector);
+            } else {
+                //按钮专题-暂停
+                btnStartPause.setBackgroundResource(R.drawable.btn_audio_pause_selector);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -287,6 +305,10 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
             tvAudioname.setText(service.getAudioName());
             int duration = service.getDuration();
             seekbarAudio.setMax(duration);
+
+
+
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
