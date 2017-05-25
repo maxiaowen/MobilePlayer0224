@@ -308,6 +308,7 @@ public class MusicPlayService extends Service {
      * @param position
      */
     private void seekTo(int position) {
+        mediaPlayer.seekTo(position);
     }
 
     /**
