@@ -48,7 +48,7 @@ public class MusicPlayService extends Service {
 
         @Override
         public String getArtistName() throws RemoteException {
-            return null;
+            return service.getArtistName();
         }
 
         @Override
@@ -107,6 +107,10 @@ public class MusicPlayService extends Service {
      * 代表一个音频信息类
      */
     private MediaItem mediaItem;
+
+
+    public static final String OPEN_COMPLETE = "com.atguigu.mobileplayer.OPEN_COMPLETE";
+
 
     @Override
     public void onCreate() {
@@ -205,9 +209,20 @@ public class MusicPlayService extends Service {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
+            //发广播
+            notifyChange(OPEN_COMPLETE);
             start();
         }
     }
+    /**
+     * 发送广播
+     * @param action
+     */
+    private void notifyChange(String action) {
+        Intent intent = new Intent(action);
+        sendBroadcast(intent);
+    }
+
 
     class MyOnErrorListener implements MediaPlayer.OnErrorListener{
         @Override
@@ -245,7 +260,8 @@ public class MusicPlayService extends Service {
      * @return
      */
     private String getArtistName() {
-        return "";
+        Log.e("TAG","Artist=="+ mediaItem.getArtist());
+        return mediaItem.getArtist();
     }
 
     /**
@@ -254,7 +270,7 @@ public class MusicPlayService extends Service {
      * @return
      */
     private String getAudioName() {
-        return "";
+        return mediaItem.getName();
     }
 
 
@@ -273,7 +289,7 @@ public class MusicPlayService extends Service {
      * @return
      */
     private int getDuration() {
-        return 0;
+        return mediaPlayer.getDuration();
     }
 
 
@@ -283,7 +299,7 @@ public class MusicPlayService extends Service {
      * @return
      */
     private int getCurrentPosition() {
-        return 0;
+        return mediaPlayer.getCurrentPosition();
     }
 
     /**
