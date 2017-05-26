@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -287,6 +286,10 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         registerReceiver(receiver, intentFilter);
 
         utils = new Utils();
+
+        //注册EventBus
+//        EventBus.getDefault().register(this);
+
     }
     class MyReceiver extends BroadcastReceiver {
 
@@ -297,21 +300,19 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+//    @Subscribe(threadMode= ThreadMode.MAIN)
     private void setViewData() {
         try {
             setButtonImage();
             tvArtist.setText(service.getArtistName());
-            Log.e("TAG","Artist=="+service.getArtistName());
             tvAudioname.setText(service.getAudioName());
             int duration = service.getDuration();
             seekbarAudio.setMax(duration);
-
-
-
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
         //发消息更新进度
         handler.sendEmptyMessage(PROGRESS);
     }
@@ -345,6 +346,9 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
             unregisterReceiver(receiver);
             receiver = null;
         }
+
+        //取消注册EventBus
+//        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 }

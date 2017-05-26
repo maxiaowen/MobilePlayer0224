@@ -117,4 +117,12 @@
 
     </LinearLayout>
 
+
+    <com.atguigu.mobileplayer0224.view.LyricShowView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_top"
+        android:layout_above="@+id/ll_bottom"
+        />
+
 </RelativeLayout>

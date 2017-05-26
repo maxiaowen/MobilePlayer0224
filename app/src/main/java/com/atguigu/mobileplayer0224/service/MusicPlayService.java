@@ -267,6 +267,10 @@ public class MusicPlayService extends Service {
         public void onPrepared(MediaPlayer mp) {
             //发广播
             notifyChange(OPEN_COMPLETE);
+
+            //EventBus发消息
+            //3.发消息
+//            EventBus.getDefault().post(mediaItem);
             start();
 
 
