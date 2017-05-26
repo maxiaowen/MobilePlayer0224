@@ -25,6 +25,7 @@ import com.atguigu.mobileplayer0224.IMusicPlayService;
 import com.atguigu.mobileplayer0224.R;
 import com.atguigu.mobileplayer0224.service.MusicPlayService;
 import com.atguigu.mobileplayer0224.utils.Utils;
+import com.atguigu.mobileplayer0224.view.LyricShowView;
 
 import static com.atguigu.mobileplayer0224.R.id.iv_icon;
 
@@ -43,6 +44,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
     private Button btnNext;
     private Button btnLyric;
 
+    private LyricShowView lyric_show_view;
+
     //这个就是IMusicPlayService.Stub的实例
     private IMusicPlayService service;
     private int position;
@@ -53,11 +56,30 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
     private boolean notification;
 
+    //显示歌词
+    private static final int SHOW_LYRIC = 1;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+
+                case SHOW_LYRIC:
+                    try {
+                        int currentPosition = service.getCurrentPosition();
+
+                        //调用歌词显示控件的setNextShowLyric
+                        lyric_show_view.setNextShowLyric(currentPosition);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    removeMessages(SHOW_LYRIC);
+                    sendEmptyMessage(SHOW_LYRIC);
+                    break;
+
+
                 case PROGRESS:
                     try {
                         int currentPosition = service.getCurrentPosition();
@@ -133,6 +155,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         btnStartPause = (Button) findViewById(R.id.btn_start_pause);
         btnNext = (Button) findViewById(R.id.btn_next);
         btnLyric = (Button) findViewById(R.id.btn_lyric);
+
+        lyric_show_view = (LyricShowView)findViewById(R.id.lyric_show_view);
 
         btnPlaymode.setOnClickListener(this);
         btnPre.setOnClickListener(this);
@@ -315,6 +339,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
         //发消息更新进度
         handler.sendEmptyMessage(PROGRESS);
+
+        handler.sendEmptyMessage(SHOW_LYRIC);
     }
 
 
@@ -346,6 +372,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
             unregisterReceiver(receiver);
             receiver = null;
         }
+
+
 
         //取消注册EventBus
 //        EventBus.getDefault().unregister(this);

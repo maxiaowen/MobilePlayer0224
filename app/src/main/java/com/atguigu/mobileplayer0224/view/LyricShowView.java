@@ -31,6 +31,7 @@ public class LyricShowView extends TextView {
     private float textHeight = 20;
 
     private ArrayList<Lyric> lyrics;
+    private int nextShowLyric;
 
 
     public LyricShowView(Context context, AttributeSet attrs) {
@@ -129,5 +130,28 @@ public class LyricShowView extends TextView {
         }else {
             canvas.drawText("没有找到歌词...",width/2,heigth/2,paintGreen);
         }
+    }
+
+    public void setNextShowLyric(int nextShowLyric) {
+        this.nextShowLyric = nextShowLyric;
+
+        if(lyrics == null || lyrics.size() == 0) {
+            return;
+        }
+
+        for (int i = 1; i < lyrics.size(); i++) {
+
+            if (nextShowLyric < lyrics.get(i).getTimePoint()) {
+                int tempIndex = i - 1;
+                if (nextShowLyric >= lyrics.get(tempIndex).getTimePoint()) {
+                    //中间高亮显示的哪一句
+                    index = tempIndex;
+                }
+            }
+
+        }
+
+        //什么方法导致onDraw
+        invalidate();
     }
 }
