@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -23,9 +22,19 @@ import android.widget.TextView;
 
 import com.atguigu.mobileplayer0224.IMusicPlayService;
 import com.atguigu.mobileplayer0224.R;
+import com.atguigu.mobileplayer0224.domain.Lyric;
+import com.atguigu.mobileplayer0224.domain.MediaItem;
 import com.atguigu.mobileplayer0224.service.MusicPlayService;
+import com.atguigu.mobileplayer0224.utils.LyricsUtils;
 import com.atguigu.mobileplayer0224.utils.Utils;
 import com.atguigu.mobileplayer0224.view.LyricShowView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import static com.atguigu.mobileplayer0224.R.id.iv_icon;
 
@@ -111,7 +120,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
             if (service != null) {
                 try {
                     if(notification){
-                        setViewData();
+                        setViewData(null);
                     }else{
                         service.openAudio(position);//打开播放第0个音频
                     }
@@ -304,15 +313,15 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
     private void initData() {
          //注册广播
-        receiver = new MyReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MusicPlayService.OPEN_COMPLETE);
-        registerReceiver(receiver, intentFilter);
+//        receiver = new MyReceiver();
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(MusicPlayService.OPEN_COMPLETE);
+//        registerReceiver(receiver, intentFilter);
 
         utils = new Utils();
 
         //注册EventBus
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
 
     }
     class MyReceiver extends BroadcastReceiver {
@@ -320,18 +329,44 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onReceive(Context context, Intent intent) {
             //主线程
-            setViewData();
+            setViewData(null);
         }
     }
 
-//    @Subscribe(threadMode= ThreadMode.MAIN)
-    private void setViewData() {
+    @Subscribe(threadMode= ThreadMode.MAIN)
+    public void setViewData(MediaItem mediaItem) {
         try {
             setButtonImage();
             tvArtist.setText(service.getArtistName());
             tvAudioname.setText(service.getAudioName());
             int duration = service.getDuration();
             seekbarAudio.setMax(duration);
+
+
+
+            //解析歌词
+            //1.得到歌词所在路径
+            String audioPath = service.getAudioPath();//mnt/sdcard/audio/beijingbeijing.mp3
+
+            String lyricPath = audioPath.substring(0,audioPath.lastIndexOf("."));//mnt/sdcard/audio/beijingbeijing
+            File file = new File(lyricPath+".lrc");
+            if(!file.exists()){
+                file = new File(lyricPath+".txt");
+            }
+            LyricsUtils lyricsUtils = new LyricsUtils();
+            lyricsUtils.readFile(file);
+
+            //2.传入解析歌词的工具类
+            ArrayList<Lyric> lyrics = lyricsUtils.getLyrics();
+            lyric_show_view.setLyrics(lyrics);
+
+            //3.如果有歌词，就歌词同步
+
+            if(lyricsUtils.isLyric()){
+                handler.sendEmptyMessage(SHOW_LYRIC);
+            }
+
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -340,7 +375,6 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         //发消息更新进度
         handler.sendEmptyMessage(PROGRESS);
 
-        handler.sendEmptyMessage(SHOW_LYRIC);
     }
 
 
@@ -375,8 +409,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
 
 
-        //取消注册EventBus
-//        EventBus.getDefault().unregister(this);
+        //2.取消注册EventBus
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 }
