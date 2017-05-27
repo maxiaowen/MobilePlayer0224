@@ -1,12 +1,16 @@
 package com.atguigu.mobileplayer0224.pager;
 
-import android.graphics.Color;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.atguigu.mobileplayer0224.R;
 import com.atguigu.mobileplayer0224.fragment.BaseFragment;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * 作者：杨光福 on 2017/5/19 11:47
@@ -16,23 +20,35 @@ import com.atguigu.mobileplayer0224.fragment.BaseFragment;
  */
 
 public class NetAudioPager extends BaseFragment {
-    private TextView textView;
+
+    @InjectView(R.id.listview)
+    ListView listview;
+    @InjectView(R.id.progressbar)
+    ProgressBar progressbar;
+    @InjectView(R.id.tv_nomedia)
+    TextView tvNomedia;
 
     //重写视图
     @Override
     public View initView() {
-        Log.e("TAG","NetAudioPager-initView");
-        textView = new TextView(context);
-        textView.setTextSize(30);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(Color.RED);
-        return textView;
+        Log.e("TAG", "NetAudioPager-initView");
+
+        View view = View.inflate(context, R.layout.fragment_net_audio, null);
+
+        ButterKnife.inject(this, view);
+
+        return view;
     }
 
     @Override
     public void initData() {
         super.initData();
-        Log.e("TAG","NetAudioPager-initData");
-        textView.setText("网络音乐的内容");
+        Log.e("TAG", "NetAudioPager-initData");
+        tvNomedia.setVisibility(View.VISIBLE);
+        tvNomedia.setText("哈哈");
+
     }
+
+
+
 }
