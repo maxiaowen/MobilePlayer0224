@@ -1,1 +1,1 @@
-include ':app', ':StartAllVideoPlayer', ':vitamio', ':jcvideoplayer-lib'
+include ':app', ':StartAllVideoPlayer', ':vitamio', ':jcvideoplayer-lib', ':PhotoView-library'
