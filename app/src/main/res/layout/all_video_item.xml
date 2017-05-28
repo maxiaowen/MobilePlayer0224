@@ -4,10 +4,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:text="我是视频"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="10dp"
+        android:background="#55888888" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_activities_item_end_transparent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <include layout="@layout/common_user_info" />
+
+        <include layout="@layout/video_middle" />
+
+        <include layout="@layout/common_bottom" />
+    </LinearLayout>
 
 
 

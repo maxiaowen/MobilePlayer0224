@@ -1,5 +1,7 @@
 package com.atguigu.mobileplayer0224;
 
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,8 @@ import com.atguigu.mobileplayer0224.pager.NetVideoPager;
 
 import java.util.ArrayList;
 
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+
 public class MainActivity extends AppCompatActivity {
 
     private RadioGroup rg_main;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
      * 缓存当前显示的Fragment
      */
     private Fragment tempFragment;
+    private SensorManager sensorManager;
+    private JCVideoPlayer.JCAutoFullscreenListener sensorEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         //设置监听
         rg_main.setOnCheckedChangeListener(new MyOnCheckedChangeListener());
         rg_main.check(R.id.rb_local_video);
+
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorEventListener = new JCVideoPlayer.JCAutoFullscreenListener();
     }
 
 
@@ -122,26 +132,51 @@ public class MainActivity extends AppCompatActivity {
      * @param event
      * @return
      */
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode ==KeyEvent.KEYCODE_BACK){
-            if(position!= 0){
-                rg_main.check(R.id.rb_local_video);
-                return true;
-            }else if(!isExit){
-                Toast.makeText(MainActivity.this, "再按一次推出软件", Toast.LENGTH_SHORT).show();
-                isExit = true;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        isExit = false;
-                    }
-                }, 2000);
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(keyCode ==KeyEvent.KEYCODE_BACK){
+//            if(position!= 0){
+//                rg_main.check(R.id.rb_local_video);
+//                return true;
+//            }else if(!isExit){
+//                Toast.makeText(MainActivity.this, "再按一次推出软件", Toast.LENGTH_SHORT).show();
+//                isExit = true;
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        isExit = false;
+//                    }
+//                }, 2000);
+//
+//                return true;
+//            }
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
-                return true;
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(sensorEventListener);
+        JCVideoPlayer.releaseAllVideos();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (JCVideoPlayer.backPress()) {
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        super.onBackPressed();
     }
 
 }
+
+
