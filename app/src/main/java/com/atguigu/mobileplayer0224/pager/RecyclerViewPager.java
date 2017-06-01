@@ -1,16 +1,14 @@
 package com.atguigu.mobileplayer0224.pager;
 
-import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.atguigu.mobileplayer0224.R;
-import com.atguigu.mobileplayer0224.activity.ShowImageAndGifActivity;
-import com.atguigu.mobileplayer0224.adapter.NetAudioFragmentAdapter;
+import com.atguigu.mobileplayer0224.adapter.RecyclerFragmentAdapter;
 import com.atguigu.mobileplayer0224.domain.NetAudioBean;
 import com.atguigu.mobileplayer0224.fragment.BaseFragment;
 import com.cjj.MaterialRefreshLayout;
@@ -33,10 +31,10 @@ import butterknife.InjectView;
  * 作用：
  */
 
-public class NetAudioPager extends BaseFragment {
+public class RecyclerViewPager extends BaseFragment {
 
-    @InjectView(R.id.listview)
-    ListView listview;
+    @InjectView(R.id.recyclerview)
+    RecyclerView recyclerview;
     @InjectView(R.id.progressbar)
     ProgressBar progressbar;
     @InjectView(R.id.tv_nomedia)
@@ -47,7 +45,7 @@ public class NetAudioPager extends BaseFragment {
 
     private List<NetAudioBean.ListBean> datas;
 
-    private NetAudioFragmentAdapter adapter;
+    private RecyclerFragmentAdapter adapter;
 
     private MaterialRefreshLayout materialRefreshLayout;
 
@@ -56,33 +54,33 @@ public class NetAudioPager extends BaseFragment {
     public View initView() {
         Log.e("TAG", "NetAudioPager-initView");
 
-        View view = View.inflate(context, R.layout.fragment_net_audio, null);
+        View view = View.inflate(context, R.layout.fragment_recyclerview, null);
 
         ButterKnife.inject(this, view);
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                NetAudioBean.ListBean listEntity = datas.get(position);
-                if(listEntity !=null ){
-                    //3.传递视频列表
-                    Intent intent = new Intent(context,ShowImageAndGifActivity.class);
-                    if(listEntity.getType().equals("gif")){
-                        String url = listEntity.getGif().getImages().get(0);
-                        intent.putExtra("url",url);
-                        context.startActivity(intent);
-                    }else if(listEntity.getType().equals("image")){
-                        String url = listEntity.getImage().getBig().get(0);
-                        intent.putExtra("url",url);
-                        context.startActivity(intent);
-                    }
-                }
-
-
-            }
-        });
+//        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//
+//                NetAudioBean.ListBean listEntity = datas.get(position);
+//                if(listEntity !=null ){
+//                    //3.传递视频列表
+//                    Intent intent = new Intent(context,ShowImageAndGifActivity.class);
+//                    if(listEntity.getType().equals("gif")){
+//                        String url = listEntity.getGif().getImages().get(0);
+//                        intent.putExtra("url",url);
+//                        context.startActivity(intent);
+//                    }else if(listEntity.getType().equals("image")){
+//                        String url = listEntity.getImage().getBig().get(0);
+//                        intent.putExtra("url",url);
+//                        context.startActivity(intent);
+//                    }
+//                }
+//
+//
+//            }
+//        });
 
 
         materialRefreshLayout = (MaterialRefreshLayout) view.findViewById(R.id.refresh);
@@ -156,8 +154,10 @@ public class NetAudioPager extends BaseFragment {
             //有视频
             tvNomedia.setVisibility(View.GONE);
             //设置适配器
-            adapter = new NetAudioFragmentAdapter(context,datas);
-            listview.setAdapter(adapter);
+            adapter = new RecyclerFragmentAdapter(context,datas);
+            recyclerview.setAdapter(adapter);
+
+            recyclerview.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
         }else{
             //没有视频
             tvNomedia.setVisibility(View.VISIBLE);

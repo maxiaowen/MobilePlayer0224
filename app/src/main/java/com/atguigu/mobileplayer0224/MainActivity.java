@@ -3,20 +3,18 @@ package com.atguigu.mobileplayer0224;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.atguigu.mobileplayer0224.fragment.BaseFragment;
 import com.atguigu.mobileplayer0224.pager.LocalAudioPager;
 import com.atguigu.mobileplayer0224.pager.LocalVideoPager;
 import com.atguigu.mobileplayer0224.pager.NetAudioPager;
 import com.atguigu.mobileplayer0224.pager.NetVideoPager;
+import com.atguigu.mobileplayer0224.pager.RecyclerViewPager;
 
 import java.util.ArrayList;
 
@@ -59,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(new LocalAudioPager());
         fragments.add(new NetAudioPager());
         fragments.add(new NetVideoPager());
+        fragments.add(new RecyclerViewPager());
+
     }
 
     class MyOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener{
@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.rb_net_video:
                     position  = 3;
+                    break;
+                case R.id.rb_recyclerview:
+                    position = 4;
                     break;
             }
             //根据位置得到对应的Fragment
